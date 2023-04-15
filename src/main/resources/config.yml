@@ -1,3 +1,6 @@
+# 自动更新
+auto-update: true
+
 # 是否向客户端发送已安装的附属列表? (默认: true)
 automatic-addons: true
 

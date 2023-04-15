@@ -4,6 +4,7 @@ import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.PaperCommandManager;
 import lombok.Getter;
+import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,6 +24,10 @@ public final class SlimefunServerEssentials extends JavaPlugin {
             getLogger().log(Level.SEVERE, "从此处下载: https://50l.cc/gzlib");
             getServer().getPluginManager().disablePlugin(this);
             return;
+        }
+
+        if (getConfig().getBoolean("auto-update") && getDescription().getVersion().startsWith("Build")) {
+            GuizhanUpdater.start(this, getFile(), "SlimefunGuguProject", "SlimefunServerEssentials", "main");
         }
 
         new Metrics(instance, 18206);
