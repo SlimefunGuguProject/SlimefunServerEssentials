@@ -38,7 +38,7 @@ public class CommandManager extends BaseCommand {
 
     @Subcommand("block")
     @CommandPermission("slimefun_server_essentials.block")
-    @Description("Sends the Slimefun Block Packet to tell a Client a Block is a Slimefun Block, Used in Testing")
+    @Description("发送一次 Slimefun 方块包到客户端，用于测试")
     public void block(Player player) {
         final Block block = player.getTargetBlock(null, 8);
         final SlimefunItem slimefunItem = BlockStorage.check(block);
@@ -53,7 +53,7 @@ public class CommandManager extends BaseCommand {
 
     @Subcommand("export_all")
     @CommandPermission("slimefun_server_essentials.export_all")
-    @Description("Exports everything from a server")
+    @Description("导出服务器的所有物品、配方与物品组信息")
     public void exportAll(CommandSender sender) {
         exportAllItems(sender);
         exportAllRecipes(sender);
@@ -63,7 +63,7 @@ public class CommandManager extends BaseCommand {
     @Subcommand("export item_groups")
     @CommandCompletion("@addons")
     @CommandPermission("slimefun_server_essentials.export.item_groups")
-    @Description("Exports the item groups for a given Slimefun Addon to a Json File")
+    @Description("导出指定附属的所有物品组")
     public void exportItemGroups(CommandSender sender, String addon) {
         final JsonObject root = new JsonObject();
         final String filePath = PATH + "item_groups/" + addon.toLowerCase() + ".json";
@@ -78,7 +78,7 @@ public class CommandManager extends BaseCommand {
 
     @Subcommand("export all_item_groups")
     @CommandPermission("slimefun_server_essentials.export.item_groups")
-    @Description("Exports all item groups for each Slimefun Addon")
+    @Description("导出所有附属的物品组")
     public void exportAllItemGroups(CommandSender sender) {
         for (String addon : Utils.getSlimefunAddonNames()) {
             exportItemGroups(sender, addon);
@@ -88,7 +88,7 @@ public class CommandManager extends BaseCommand {
     @Subcommand("export items")
     @CommandCompletion("@addons")
     @CommandPermission("slimefun_server_essentials.export.items")
-    @Description("Exports the items for a given Slimefun Addon to a Json File")
+    @Description("导出指定附属的所有物品")
     public void exportItems(CommandSender sender, String addon) {
         final JsonObject root = new JsonObject();
         final String filePath = PATH + "items/" + addon.toLowerCase() + ".json";
@@ -103,7 +103,7 @@ public class CommandManager extends BaseCommand {
     
     @Subcommand("export all_items")
     @CommandPermission("slimefun_server_essentials.export.items")
-    @Description("Exports all items for each Slimefun Addon")
+    @Description("导出所有附属的所有物品")
     public void exportAllItems(CommandSender sender) {
         for (String addon : Utils.getSlimefunAddonNames()) {
             exportItems(sender, addon);
@@ -113,7 +113,7 @@ public class CommandManager extends BaseCommand {
     @Subcommand("export recipes")
     @CommandCompletion("@addons")
     @CommandPermission("slimefun_server_essentials.export.recipes")
-    @Description("Exports the recipes for a given Slimefun Addon to a Json File")
+    @Description("导出指定附属的所有配方")
     public void exportRecipes(CommandSender sender, String addon) {
         final JsonObject root = new JsonObject();
         final String filePath = PATH + "recipes/" + addon.toLowerCase() + ".json";
@@ -144,7 +144,7 @@ public class CommandManager extends BaseCommand {
     
     @Subcommand("export all_recipes")
     @CommandPermission("slimefun_server_essentials.export.recipes")
-    @Description("Exports all recipes for each Slimefun Addon")
+    @Description("导出所有附属的所有配方")
     public void exportAllRecipes(CommandSender sender) {
         for (String addon : Utils.getSlimefunAddonNames()) {
             exportRecipes(sender, addon);
@@ -160,7 +160,7 @@ public class CommandManager extends BaseCommand {
                     throw new IOException();
                 }
             } catch(IOException | SecurityException e) {
-                sender.sendMessage(ChatColors.color("&cAn error occurred while exporting! (Check the Console)"));
+                sender.sendMessage(ChatColors.color("&c导出时发生错误，请检查控制台日志！"));
                 e.printStackTrace();
                 return;
             }
@@ -172,9 +172,9 @@ public class CommandManager extends BaseCommand {
             fileWriter.flush();
             fileWriter.close();
         
-            sender.sendMessage(ChatColors.color("&aSuccessfully exported to " + filePath + "!"));
+            sender.sendMessage(ChatColors.color("&a已导出至 " + filePath + "!"));
         } catch (IOException | SecurityException e) {
-            sender.sendMessage(ChatColors.color("&cAn error occurred while exporting! (Check the Console)"));
+            sender.sendMessage(ChatColors.color("&c导出时发生错误，请检查控制台日志！"));
             e.printStackTrace();
         }
     }

@@ -55,13 +55,13 @@ public class InfinityExHook extends PluginHook {
     private static final ItemStack INFINITY_INGOT_USAGE = new ComplexItem(new CustomItemStack(Materials.INFINITE_INGOT, meta -> {
        final List<String> lore = meta.getLore() != null ? meta.getLore() : new ArrayList<>();
        lore.add(0, " ");
-       lore.add(0, ChatColor.WHITE + "Lasts: 27h 13m 20s");
+       lore.add(0, ChatColor.WHITE + "持续时间：27h 13m 20s");
        meta.setLore(lore);
     }));
     private static final ItemStack VOID_INGOT_USAGE = new ComplexItem(new CustomItemStack(Materials.VOID_INGOT, meta -> {
         final List<String> lore = meta.getLore() != null ? meta.getLore() : new ArrayList<>();
         lore.add(0, " ");
-        lore.add(0, ChatColor.WHITE + "Lasts: 4h 26m 40s");
+        lore.add(0, ChatColor.WHITE + "持续时间：4h 26m 40s");
         meta.setLore(lore);
     }));
 
