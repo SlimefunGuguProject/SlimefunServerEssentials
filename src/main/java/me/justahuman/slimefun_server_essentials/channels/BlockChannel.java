@@ -3,8 +3,10 @@ package me.justahuman.slimefun_server_essentials.channels;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.events.SlimefunBlockBreakEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.SlimefunBlockPlaceEvent;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.blocks.BlockPosition;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.blocks.ChunkPosition;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -36,10 +38,6 @@ public class BlockChannel extends AbstractChannel {
     @Override
     public void onMessageReceived(@Nonnull Player player, @Nonnull byte[] message) {
         final World world = player.getWorld();
-        final BlockStorage blockStorage = BlockStorage.getStorage(world);
-        if (blockStorage == null) {
-            return;
-        }
 
         final ByteArrayDataInput packet = ByteStreams.newDataInput(message);
         final int chunkX = packet.readInt();
@@ -48,28 +46,22 @@ public class BlockChannel extends AbstractChannel {
 
         if (BLOCK_CACHE.containsKey(chunkPosition)) {
             final Set<BlockPosition> blockPositions = BLOCK_CACHE.get(chunkPosition);
-            blockPositions.removeIf(blockPosition -> BlockStorage.check(blockPosition.toLocation()) == null);
+            blockPositions.removeIf(blockPosition -> !StorageCacheUtils.hasBlock(blockPosition.toLocation()));
 
             for (BlockPosition blockPosition : blockPositions) {
-                sendSlimefunBlock(player, blockPosition, BlockStorage.getLocationInfo(blockPosition.toLocation(), "id"));
+                sendSlimefunBlock(player, blockPosition, StorageCacheUtils.getBlock(blockPosition.toLocation()).getSfId());
             }
 
             BLOCK_CACHE.put(chunkPosition, blockPositions);
             return;
         }
-
-        final Map<Location, Config> rawStorage = blockStorage.getRawStorage();
+        var allBlockData = Slimefun.getDatabaseManager().getBlockDataController().getChunkData(chunkPosition.getChunk()).getAllBlockData();
         final Set<BlockPosition> blockPositions = new HashSet<>();
-        for (Map.Entry<Location, Config> entry : rawStorage.entrySet()) {
-            final Location location = entry.getKey();
-            final Config config = entry.getValue();
-            if (location.getBlockX() >> 4 != chunkX || location.getBlockZ() >> 4 != chunkZ || !config.contains("id")) {
-                continue;
-            }
-
+        for (var blockData : allBlockData) {
+            final Location location = blockData.getLocation();
             final BlockPosition blockPosition = new BlockPosition(location);
             blockPositions.add(blockPosition);
-            sendSlimefunBlock(player, blockPosition, config.getString("id"));
+            sendSlimefunBlock(player, blockPosition, blockData.getSfId());
         }
 
         BLOCK_CACHE.put(chunkPosition, blockPositions);
